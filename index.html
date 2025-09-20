@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cargo Jeans Size Chart</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f9fafb;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --accent: #2563eb;
+      --divider: #e5e7eb;
+      --export-line: #111111;
+      --card-radius: 20px;
+      --button-radius: 12px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", "Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+      padding: clamp(1.5rem, 2vw + 1rem, 3rem) clamp(1rem, 2vw + 1rem, 4rem);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.5rem, 1.5vw + 1rem, 2.5rem);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw + 1rem, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: clamp(1.25rem, 2vw + 1rem, 1.75rem);
+      margin: 0 0 0.5rem;
+    }
+    p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .button-group {
+      display: inline-flex;
+      border: 1px solid var(--divider);
+      border-radius: var(--button-radius);
+      overflow: hidden;
+      background: #fff;
+    }
+    .button-group button {
+      border: none;
+      padding: 0.65rem 1.1rem;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 220ms ease, color 220ms ease;
+    }
+    .button-group button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    button,
+    .cta-button {
+      font: inherit;
+      cursor: pointer;
+      border-radius: var(--button-radius);
+      border: none;
+      padding: 0.75rem 1.4rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      min-height: 44px;
+      text-decoration: none;
+    }
+    button.secondary {
+      background: #fff;
+      color: var(--text-primary);
+      border: 1px solid var(--divider);
+    }
+    button:hover,
+    .cta-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+    }
+    button.secondary:hover {
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.08);
+    }
+    button:focus-visible,
+    .cta-button:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.35);
+      outline-offset: 2px;
+    }
+    .chart-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      padding: clamp(1rem, 2vw + 1rem, 2.5rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .chart-header .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: calc(var(--card-radius) - 6px);
+      border: 1px solid var(--divider);
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 640px;
+      font-size: 0.95rem;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #f3f4f6;
+      color: var(--text-primary);
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--divider);
+    }
+    thead th:first-child {
+      border-top-left-radius: calc(var(--card-radius) - 6px);
+    }
+    thead th:last-child {
+      border-top-right-radius: calc(var(--card-radius) - 6px);
+    }
+    tbody td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--divider);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 160ms ease;
+    }
+    tbody tr:nth-child(even) td {
+      background: #f9fafc;
+    }
+    tbody tr:hover td {
+      background: rgba(37, 99, 235, 0.06);
+    }
+    tbody td:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+    tbody td input {
+      width: 100%;
+      font: inherit;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.4rem 0.5rem;
+      outline: none;
+      background: #fff;
+      color: var(--text-primary);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .measurement-guide {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .guide-item {
+      background: #fff;
+      border-radius: var(--card-radius);
+      padding: 1rem;
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .guide-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+    .guide-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(37, 99, 235, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .guide-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent);
+    }
+    .guide-item h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+    }
+    .guide-item p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+    .cta-area {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .cta-button {
+      max-width: 240px;
+      font-size: 1rem;
+    }
+    .cta-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .cta-button:active {
+      transform: scale(0.98);
+    }
+    .helper-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .export-card {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: rgba(249, 250, 251, 0.95);
+      z-index: 50;
+    }
+    .export-card.active {
+      display: flex;
+    }
+    .export-stage {
+      background: #fff;
+      width: 880px;
+      border-radius: 28px;
+      padding: 2.5rem;
+      border: 2px solid var(--export-line);
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      box-shadow: 0 32px 70px rgba(0, 0, 0, 0.18);
+      color: #111;
+    }
+    .export-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .export-title {
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin: 0;
+      color: #111;
+    }
+    .export-subtitle {
+      margin-top: 0.35rem;
+      font-size: 1rem;
+      color: #374151;
+    }
+    .export-icon-box {
+      width: 72px;
+      height: 72px;
+      border: 2px solid var(--export-line);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .export-icon-box svg {
+      width: 40px;
+      height: 40px;
+      fill: #111;
+    }
+    .export-table-wrapper {
+      border: 2px solid var(--export-line);
+      border-radius: 26px;
+      padding: 0.5rem;
+    }
+    .export-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .export-table th,
+    .export-table td {
+      border-bottom: 2px solid var(--export-line);
+      padding: 0.9rem 1rem;
+      font-size: 0.95rem;
+      color: #111;
+    }
+    .export-table th {
+      text-align: left;
+      font-weight: 700;
+    }
+    .export-table tr:last-child td {
+      border-bottom: none;
+    }
+    .export-table th:first-child {
+      background: #111;
+      color: #fff;
+      border-radius: 999px;
+      padding-inline: 1.5rem;
+    }
+    .export-table th:not(:first-child) {
+      border-top: 2px solid var(--export-line);
+    }
+    .export-unit-label {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-top: -0.3rem;
+    }
+    .export-guide h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+      color: #111;
+    }
+    .export-guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.85rem;
+    }
+    .export-guide-grid .guide-item {
+      border: 2px solid var(--export-line);
+      box-shadow: none;
+      border-radius: 20px;
+      background: #fff;
+    }
+    .export-footer {
+      text-align: right;
+      font-size: 0.95rem;
+      color: #1f2937;
+      font-weight: 600;
+    }
+    @media (max-width: 768px) {
+      html {
+        font-size: 15px;
+      }
+      .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      table {
+        font-size: 0.9rem;
+      }
+      .cta-area {
+        justify-content: stretch;
+      }
+      .cta-button {
+        width: 100%;
+      }
+    }
+    @media (max-width: 640px) {
+      html {
+        font-size: 14px;
+      }
+      .cta-button {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        z-index: 20;
+        box-shadow: 0 14px 45px rgba(37, 99, 235, 0.35);
+      }
+      main {
+        padding-bottom: 6.5rem;
+      }
+    }
+    @media print {
+      body {
+        background: #fff;
+      }
+      .page-shell {
+        display: none !important;
+      }
+      .export-card {
+        display: flex !important;
+        position: static;
+        padding: 0;
+      }
+      .export-stage {
+        box-shadow: none;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1>Cargo Jeans</h1>
+      <p class="helper-text">Toleransi ukuran ±1–2 cm</p>
+    </header>
+
+    <section class="chart-card" aria-labelledby="size-chart-heading">
+      <div class="chart-header">
+        <div>
+          <h2 id="size-chart-heading">Size Chart</h2>
+          <p class="subtitle">Pilih satuan dan sesuaikan data sesuai kebutuhan produk Anda.</p>
+        </div>
+        <div class="actions-row" role="toolbar" aria-label="Pengaturan tabel">
+          <div class="button-group" role="group" aria-label="Pilih satuan">
+            <button type="button" class="unit-toggle" data-unit="cm" aria-pressed="true">CM</button>
+            <button type="button" class="unit-toggle" data-unit="in" aria-pressed="false">IN</button>
+          </div>
+          <div class="toolbar" role="group" aria-label="Aksi tabel">
+            <button type="button" class="secondary" id="addSizeBtn" aria-label="Tambah baris size">Tambah Size</button>
+            <button type="button" class="secondary" id="resetBtn" aria-label="Kembalikan data awal">Reset Default</button>
+            <button type="button" class="secondary" id="printBtn" aria-label="Cetak atau simpan PDF">Print / Save PDF</button>
+            <button type="button" id="exportPngBtn" aria-label="Ekspor sebagai gambar PNG">Export PNG</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper" role="region" aria-live="polite">
+        <table id="sizeTable" aria-describedby="size-chart-heading">
+          <thead>
+            <tr>
+              <th scope="col">Size</th>
+              <th scope="col">LP</th>
+              <th scope="col">L.Paha</th>
+              <th scope="col">Hip</th>
+              <th scope="col">PC</th>
+              <th scope="col">FR</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="cta-area">
+        <a href="#" class="cta-button" role="button" aria-label="Tambah ke keranjang">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4h-2a1 1 0 0 0-1 1v1h2l2.4 9.6a1 1 0 0 0 .97.74h8.26a1 1 0 0 0 .97-.757l1.4-5.6a1 1 0 0 0-.97-1.243h-9.36l-.34-1.36h9.7a1 1 0 1 0 0-2h-10l-.32-1.28a1 1 0 0 0-.97-.76zM9 20a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm8 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+          </svg>
+          Tambah ke Keranjang
+        </a>
+      </div>
+    </section>
+
+    <section aria-labelledby="guide-heading">
+      <h2 id="guide-heading">Panduan Pengukuran</h2>
+      <p class="helper-text">Gunakan pita ukur dan pastikan celana berada pada permukaan datar ketika melakukan pengukuran.</p>
+      <div class="measurement-guide" id="guideList">
+        <article class="guide-item" data-guide="lp">
+          <div class="guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2h-2V7a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2H4V7zm-1 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm2 4a3 3 0 0 1 3-3h8a3 3 0 1 1 0 6H8a3 3 0 0 1-3-3zm3 1a1 1 0 0 0 1 1h8a1 1 0 1 0 0-2H8a1 1 0 0 0-1 1z" /></svg>
+          </div>
+          <h3>LP (Lingkar Pinggang)</h3>
+          <p>Ukur keliling pinggang pada bagian paling ramping dengan posisi pita ukur sejajar lantai.</p>
+        </article>
+        <article class="guide-item" data-guide="lph">
+          <div class="guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 3a3 3 0 0 0-3 3v3h2V6a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3h2V6a3 3 0 0 0-3-3H7zm-3 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1zm2 4a3 3 0 0 1 3-3h8a3 3 0 1 1 0 6H9a3 3 0 0 1-3-3zm3 1a1 1 0 0 0 1 1h8a1 1 0 1 0 0-2H9a1 1 0 0 0-1 1z" /></svg>
+          </div>
+          <h3>L.Paha (Lingkar Paha)</h3>
+          <p>Ukur keliling paha pada titik paling penuh untuk memastikan kenyamanan gerak.</p>
+        </article>
+        <article class="guide-item" data-guide="hip">
+          <div class="guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 5a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2h-2V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H6V5zm-2 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5c0 3.866-3.134 7-7 7h-4c-3.866 0-7-3.134-7-7v-5zm3 0v5c0 2.761 2.239 5 5 5h4c2.761 0 5-2.239 5-5v-5H7z" /></svg>
+          </div>
+          <h3>Hip (Lingkar Panggul)</h3>
+          <p>Ukur sekeliling panggul pada titik terlebar sambil menjaga pita ukur tetap rata.</p>
+        </article>
+        <article class="guide-item" data-guide="pc">
+          <div class="guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M10 3a2 2 0 0 0-2 2v14H6a1 1 0 0 0 0 2h12a1 1 0 1 0 0-2h-2V5a2 2 0 0 0-2-2h-4zm0 2h4v14h-4V5z" /></svg>
+          </div>
+          <h3>PC (Panjang Celana)</h3>
+          <p>Ukur panjang dari pinggang hingga ujung bawah celana mengikuti garis samping.</p>
+        </article>
+        <article class="guide-item" data-guide="fr">
+          <div class="guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v2H6a2 2 0 0 0-2 2v2a5 5 0 0 0 4 4.9V21a1 1 0 1 0 2 0v-5h4v5a1 1 0 1 0 2 0v-5.1A5 5 0 0 0 20 11V9a2 2 0 0 0-2-2h-3V5a3 3 0 0 0-3-3zm0 2a1 1 0 0 1 1 1v2h-2V5a1 1 0 0 1 1-1zm-6 5h12v2a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V9z" /></svg>
+          </div>
+          <h3>FR (Pasak Depan)</h3>
+          <p>Ukur dari bagian atas depan waistband sampai titik sambungan selangkangan depan.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="export-card" id="exportCard" aria-hidden="true"></div>
+
+  <script>
+    const defaultData = [
+      { size: "XS", lp: 68, lph: 54, hip: 82, pc: 100, fr: 30 },
+      { size: "S", lp: 70, lph: 56, hip: 84, pc: 100, fr: 31 },
+      { size: "M", lp: 76, lph: 59, hip: 86, pc: 100, fr: 32 },
+      { size: "L", lp: 78, lph: 60, hip: 90, pc: 100, fr: 32 },
+      { size: "XL", lp: 80, lph: 60, hip: 92, pc: 100, fr: 32 },
+      { size: "XXL", lp: 82, lph: 62, hip: 96, pc: 100, fr: 33 }
+    ];
+
+    const STORAGE_KEY = "cargo-size-data-v1";
+    const UNIT_KEY = "cargo-size-unit";
+    let tableData = loadStoredData();
+    let currentUnit = loadStoredUnit();
+    let activeInput = null;
+
+    const tableBody = document.querySelector("#sizeTable tbody");
+    const unitButtons = document.querySelectorAll(".unit-toggle");
+
+    function loadStoredData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length) {
+            return parsed;
+          }
+        }
+      } catch (err) {
+        console.error("Gagal memuat data tersimpan", err);
+      }
+      return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function loadStoredUnit() {
+      const stored = localStorage.getItem(UNIT_KEY);
+      return stored === "in" ? "in" : "cm";
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tableData));
+    }
+
+    function saveUnit(unit) {
+      localStorage.setItem(UNIT_KEY, unit);
+    }
+
+    function formatCm(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+    }
+
+    function formatInches(cmValue) {
+      const inches = Math.round((cmValue / 2.54) * 10) / 10;
+      return inches.toFixed(1).replace(/\.0$/, "");
+    }
+
+    function getDisplayValue(field, value) {
+      if (field === "size") return value;
+      return currentUnit === "cm" ? formatCm(value) : formatInches(value);
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+      tableData.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        tr.dataset.index = index;
+        ["size", "lp", "lph", "hip", "pc", "fr"].forEach((field) => {
+          const td = document.createElement("td");
+          td.dataset.field = field;
+          if (field === "size") {
+            td.dataset.value = item[field];
+          } else {
+            td.dataset.cm = item[field];
+          }
+          td.setAttribute("tabindex", "0");
+          td.textContent = getDisplayValue(field, item[field]);
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+      updateUnitButtons();
+    }
+
+    function updateUnitButtons() {
+      unitButtons.forEach((button) => {
+        const isActive = button.dataset.unit === currentUnit;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    function handleUnitChange(unit) {
+      if (unit === currentUnit) return;
+      currentUnit = unit;
+      saveUnit(unit);
+      renderTable();
+    }
+
+    unitButtons.forEach((btn) => {
+      btn.addEventListener("click", () => handleUnitChange(btn.dataset.unit));
+    });
+
+    function closeActiveInput(save = true) {
+      if (!activeInput) return;
+      const cell = activeInput.parentElement;
+      if (save) {
+        commitEdit(cell, activeInput.value);
+      } else {
+        cancelEdit(cell);
+      }
+      activeInput = null;
+    }
+
+    function enterEditMode(cell) {
+      if (cell.querySelector("input")) return;
+      closeActiveInput(false);
+      const field = cell.dataset.field;
+      if (!field) return;
+      const currentValue = cell.textContent.trim();
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = currentValue;
+      cell.dataset.original = currentValue;
+      cell.textContent = "";
+      cell.appendChild(input);
+      input.focus();
+      input.select();
+      activeInput = input;
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          closeActiveInput(true);
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeActiveInput(false);
+        }
+      });
+      input.addEventListener("blur", () => {
+        closeActiveInput(true);
+      });
+    }
+
+    document.getElementById("sizeTable").addEventListener("click", (event) => {
+      const cell = event.target.closest("td");
+      if (!cell) return;
+      enterEditMode(cell);
+    });
+
+    document.getElementById("sizeTable").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const cell = event.target.closest("td");
+        if (cell && !cell.querySelector("input")) {
+          event.preventDefault();
+          enterEditMode(cell);
+        }
+      }
+    });
+
+    function commitEdit(cell, newValue) {
+      const rowIndex = Number(cell.parentElement.dataset.index);
+      const field = cell.dataset.field;
+      if (field === "size") {
+        const value = newValue.trim();
+        if (!value) {
+          cancelEdit(cell);
+          return;
+        }
+        tableData[rowIndex][field] = value;
+      } else {
+        const sanitized = newValue.trim().replace(",", ".");
+        const numeric = parseFloat(sanitized);
+        if (Number.isNaN(numeric) || numeric <= 0) {
+          cancelEdit(cell);
+          return;
+        }
+        const cmValue = currentUnit === "cm" ? numeric : Math.round(numeric * 2.54 * 10) / 10;
+        tableData[rowIndex][field] = cmValue;
+      }
+      saveData();
+      renderTable();
+    }
+
+    function cancelEdit(cell) {
+      const original = cell.dataset.original;
+      cell.textContent = original !== undefined ? original : cell.textContent;
+      delete cell.dataset.original;
+    }
+
+    document.getElementById("addSizeBtn").addEventListener("click", () => {
+      const sizeLabel = prompt("Nama size baru:");
+      if (!sizeLabel) return;
+      const fields = [
+        { key: "lp", label: "LP (cm)", fallback: 70 },
+        { key: "lph", label: "L.Paha (cm)", fallback: 56 },
+        { key: "hip", label: "Hip (cm)", fallback: 84 },
+        { key: "pc", label: "PC (cm)", fallback: 100 },
+        { key: "fr", label: "FR (cm)", fallback: 31 }
+      ];
+      const newEntry = { size: sizeLabel.trim() };
+      for (const field of fields) {
+        let value = prompt(`Masukkan ${field.label}:`, field.fallback);
+        if (value === null) return;
+        value = parseFloat(String(value).trim().replace(",", "."));
+        if (Number.isNaN(value) || value <= 0) {
+          alert("Nilai tidak valid. Baris baru dibatalkan.");
+          return;
+        }
+        newEntry[field.key] = Math.round(value * 10) / 10;
+      }
+      tableData.push(newEntry);
+      saveData();
+      renderTable();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (!confirm("Kembalikan data ke setelan awal?")) return;
+      tableData = JSON.parse(JSON.stringify(defaultData));
+      saveData();
+      renderTable();
+    });
+
+    function buildExportCard() {
+      const exportCard = document.getElementById("exportCard");
+      exportCard.innerHTML = "";
+      const stage = document.createElement("div");
+      stage.className = "export-stage";
+
+      const header = document.createElement("div");
+      header.className = "export-header";
+      const headingWrap = document.createElement("div");
+      const title = document.createElement("h2");
+      title.className = "export-title";
+      title.textContent = "Size Chart";
+      const subtitle = document.createElement("p");
+      subtitle.className = "export-subtitle";
+      subtitle.textContent = "Cargo Jeans · Toleransi ukuran ±1–2 cm";
+      headingWrap.appendChild(title);
+      headingWrap.appendChild(subtitle);
+
+      const iconBox = document.createElement("div");
+      iconBox.className = "export-icon-box";
+      iconBox.setAttribute("aria-hidden", "true");
+      iconBox.innerHTML = `<svg viewBox="0 0 24 24"><path d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v4h-2V6a1 1 0 0 0-1-1h-3v14h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2V5H8a1 1 0 0 0-1 1v4H5V6a3 3 0 0 1-2-3z"/></svg>`;
+
+      header.appendChild(headingWrap);
+      header.appendChild(iconBox);
+
+      const unitNote = document.createElement("p");
+      unitNote.className = "export-unit-label";
+      unitNote.textContent = `Unit saat ini: ${currentUnit.toUpperCase()}`;
+
+      const tableWrapper = document.createElement("div");
+      tableWrapper.className = "export-table-wrapper";
+      const table = document.createElement("table");
+      table.className = "export-table";
+      const headerRow = document.createElement("tr");
+      const headers = ["Size", "LP", "L.Paha", "Hip", "PC", "FR"];
+      headers.forEach((text) => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        th.scope = "col";
+        headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+
+      tableData.forEach((item) => {
+        const tr = document.createElement("tr");
+        headers.forEach((headerText) => {
+          const keyMap = { Size: "size", LP: "lp", "L.Paha": "lph", Hip: "hip", PC: "pc", FR: "fr" };
+          const field = keyMap[headerText];
+          const td = document.createElement("td");
+          td.textContent = getDisplayValue(field, item[field]);
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+
+      tableWrapper.appendChild(table);
+
+      const guide = document.createElement("div");
+      guide.className = "export-guide";
+      const guideTitle = document.createElement("h3");
+      guideTitle.textContent = "Panduan Pengukuran";
+      const guideGrid = document.createElement("div");
+      guideGrid.className = "export-guide-grid";
+      const items = document.querySelectorAll("#guideList .guide-item");
+      items.forEach((item) => {
+        const clone = item.cloneNode(true);
+        guideGrid.appendChild(clone);
+      });
+      guide.appendChild(guideTitle);
+      guide.appendChild(guideGrid);
+
+      const footer = document.createElement("div");
+      footer.className = "export-footer";
+      footer.textContent = "@reallygreatsite";
+
+      stage.appendChild(header);
+      stage.appendChild(unitNote);
+      stage.appendChild(tableWrapper);
+      stage.appendChild(guide);
+      stage.appendChild(footer);
+
+      exportCard.appendChild(stage);
+      return stage;
+    }
+
+    document.getElementById("exportPngBtn").addEventListener("click", async () => {
+      const exportCard = document.getElementById("exportCard");
+      const stage = buildExportCard();
+      exportCard.classList.add("active");
+      exportCard.setAttribute("aria-hidden", "false");
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      html2canvas(stage, { scale: 2, backgroundColor: "#ffffff" }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "size-chart.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        exportCard.classList.remove("active");
+        exportCard.setAttribute("aria-hidden", "true");
+        exportCard.innerHTML = "";
+      });
+    });
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      const exportCard = document.getElementById("exportCard");
+      buildExportCard();
+      exportCard.classList.add("active");
+      exportCard.setAttribute("aria-hidden", "false");
+      setTimeout(() => {
+        window.print();
+      }, 120);
+    });
+
+    window.addEventListener("afterprint", () => {
+      const exportCard = document.getElementById("exportCard");
+      exportCard.classList.remove("active");
+      exportCard.setAttribute("aria-hidden", "true");
+      exportCard.innerHTML = "";
+    });
+
+    renderTable();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" integrity="sha256-kpLeCHQzqqPiR+jYwIV/pY5Pja/qvpDMAYA9Yg3wj2M=" crossorigin="anonymous"></script>
+</body>
+</html>
